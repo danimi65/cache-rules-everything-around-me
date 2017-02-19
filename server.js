@@ -1,6 +1,8 @@
+//jshint esversion: 6
 const express = require('express');
 const bodyParser = require('body-parser');
 const handlebars = require('express-handlebars');
+const cache = require('express-redis-cache')();
 
 const { slow } = require('./routes');
 
@@ -12,9 +14,12 @@ app.set('view engine', '.hbs');
 
 app.use(bodyParser.json());
 // server.use(creamCache.init()); /* student implements this */
+
+
+app.use('/', cache.route());
 app.use('/slow', slow);
 
-app.get('/', (req, res) => {
+app.get('/', cache.route(), (req, res) => {
   res.render('index');
 });
 
